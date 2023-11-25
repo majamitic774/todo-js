@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+</head>
+<body>
+
+    <ul id="todos-list"></ul>
+
+   <script>
+    const API = "http://localhost/todo_app/";
+
+    function showTodos(todos) {
+        var ul = document.getElementById('todos-list');
+
+        todos.forEach(todo => {
+            var li = document.createElement('li');
+            li.innerText = `TODO: ${todo.body}, id: ${todo.id}`;
+            ul.appendChild(li)
+        })
+    }
+
+    fetch(`${API}get_todos.php`)
+      .then(response => response.json())
+      .then(data => {
+            showTodos(data);        
+      })
+      .catch(error => console.error('Error:', error));
+
+   </script> 
+</body>
+</html>
