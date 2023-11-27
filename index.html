@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
-  </head>
-  <body>
-    <ul id="todos-list"></ul>
-    <input id="todo-input" />
-    <button id="todo-button">add todo</button>
 
-    <script>
-      const API = 'http://localhost/todo_app/'
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App</title>
+</head>
 
-      function showTodos(todos) {
-        var ul = document.getElementById('todos-list')
-        ul.innerHTML = ''
+<body>
+  <ul id="todos-list"></ul>
+  <input id="todo-input" />
+  <button id="todo-button">add todo</button>
 
-        todos.forEach((todo) => {
-          var li = document.createElement('li')
-          li.innerText = `bla: ${todo.body}, id: ${todo.id}`
-          ul.appendChild(li)
-        })
-      }
+  <script>
+    const API = 'http://localhost/todo-app/'
 
-      fetch(`${API}get_todos.php`)
+    function showTodos(todos) {
+      var ul = document.getElementById('todos-list')
+      ul.innerHTML = ''
+
+      todos.forEach((todo) => {
+        var li = document.createElement('li')
+        li.innerText = `bla: ${todo.body}, id: ${todo.id}`
+        ul.appendChild(li)
+      })
+    }
+
+    fetch(`${API}get_todos.php`)
+      .then((response) => response.json())
+      .then((data) => {
+        showTodos(data)
+      })
+      .catch((error) => console.error('Error:', error))
+
+    let button = document.getElementById('todo-button')
+    button.addEventListener('click', function () {
+      let input = document.getElementById('todo-input')
+      let inputValue = input.value
+      console.log(inputValue)
+
+      fetch(`${API}add_todo.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: inputValue }),
+      })
         .then((response) => response.json())
         .then((data) => {
-          showTodos(data)
+          console.log(data)
         })
         .catch((error) => console.error('Error:', error))
+    })
+  </script>
+</body>
 
-      let button = document.getElementById('todo-button')
-      button.addEventListener('click', function () {
-        let input = document.getElementById('todo-input')
-        let inputValue = input.value
-
-        fetch(`${API}add_todo.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body: inputValue }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data)
-          })
-          .catch((error) => console.error('Error:', error))
-      })
-    </script>
-  </body>
 </html>
