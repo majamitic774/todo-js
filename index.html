@@ -15,6 +15,29 @@
   <script>
     const API = 'http://localhost/todo-app/'
 
+    function updateTodoItem(todoId) {
+      const newBody = prompt('Enter new body text:');
+      if (newBody !== null) { // Check if the user clicked "Cancel"
+        fetch(`${API}update_todo.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: todoId, newBody: newBody }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Update the UI with the modified data if needed
+            fetch(`${API}get_todos.php`)
+              .then((response) => response.json())
+              .then((data) => {
+                showTodos(data);
+              })
+              .catch((error) => console.error('Error:', error));
+          })
+          .catch((error) => console.error('Error:', error));
+      }
+    }
+
     function showTodos(todos) {
       var ul = document.getElementById('todos-list')
       ul.innerHTML = ''
@@ -30,11 +53,21 @@
           deleteTodo(todo.id);
 
         });
-        li.appendChild(deleteButton);
 
+        //update todo
+        var updateTodo = document.createElement('button');
+        updateTodo.innerText = 'Edit';
+        updateTodo.addEventListener('click', function () {
+          updateTodoItem(todo.id);
+        });
+
+        li.appendChild(deleteButton);
+        li.appendChild(updateTodo);
         ul.appendChild(li)
       })
     }
+
+
 
     function deleteTodo(todoId) {
       fetch(`${API}delete_todo.php`, {
@@ -63,6 +96,7 @@
       })
       .catch((error) => console.error('Error:', error))
 
+
     let button = document.getElementById('todo-button')
     button.addEventListener('click', function () {
       let input = document.getElementById('todo-input')
@@ -77,6 +111,7 @@
         .then((response) => response.json())
         .then((data) => {
           console.log(data)
+          // get all elements and show them
         })
         .catch((error) => console.error('Error:', error))
     })
