@@ -45,7 +45,6 @@
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          // After successful deletion, you may want to fetch and display updated todos
           fetch(`${API}get_todos.php`)
             .then((response) => response.json())
             .then((data) => {
