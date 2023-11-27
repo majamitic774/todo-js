@@ -22,9 +22,40 @@
       todos.forEach((todo) => {
         var li = document.createElement('li')
         li.innerText = `bla: ${todo.body}, id: ${todo.id}`
+
+        //delete todo button 
+        var deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.addEventListener('click', function () {
+          deleteTodo(todo.id);
+
+        });
+        li.appendChild(deleteButton);
+
         ul.appendChild(li)
       })
     }
+
+    function deleteTodo(todoId) {
+      fetch(`${API}delete_todo.php`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: todoId }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // After successful deletion, you may want to fetch and display updated todos
+          fetch(`${API}get_todos.php`)
+            .then((response) => response.json())
+            .then((data) => {
+              showTodos(data);
+            })
+            .catch((error) => console.error('Error:', error));
+        })
+        .catch((error) => console.error('Error:', error));
+    }
+
 
     fetch(`${API}get_todos.php`)
       .then((response) => response.json())
